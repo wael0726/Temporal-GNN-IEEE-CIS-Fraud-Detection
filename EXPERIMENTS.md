@@ -1,4 +1,4 @@
-# ML Experiment Report — Hardened 2026
+# ML Experiment Report
 
 This document records the experimental evidence currently bundled with the repository. Results are separated by protocol so that a later experiment does not silently overwrite an earlier benchmark.
 
