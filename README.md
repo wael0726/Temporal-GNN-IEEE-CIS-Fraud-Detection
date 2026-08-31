@@ -50,11 +50,11 @@ The temporal aspect is therefore **causal historical feature engineering + a dir
 
 # Results
 
-Fraud is highly imbalanced, so the headline ranking metric is **Average Precision (AP / PR-AUC)** rather than accuracy. AP is reported together with the fraud prevalence and the lift over a random ranking baseline.
+Fraud is highly imbalanced, so the headline ranking metric is **Average Precision (AP / PR-AUC)** rather than accuracy. AP is reported together with fraud prevalence and lift over a random-ranking baseline.
 
-### 50k multi-model study — 3 seeds
+## 50k multi-model study — 3 seeds
 
-The complete `ml_study_full` output contains 38 experiment rows because it includes the main models plus feature-group, history-depth, relation, and paired-comparison experiments. The table below deliberately shows only the **canonical main-model rows**: one result per seed for each model, with GraphSAGE using all five relations and `history_k=3`.
+The complete `ml_study_full` output contains 38 experiment rows because it includes the main models plus feature-group, history-depth, relation, and paired-comparison experiments. The table below shows only the **canonical main-model rows**: one result per seed for each model, with GraphSAGE using all five relations and `history_k=3`.
 
 | Model | Seeds | Mean test AP | Std. dev. | Mean ROC-AUC |
 |---|---:|---:|---:|---:|
@@ -64,34 +64,42 @@ The complete `ml_study_full` output contains 38 experiment rows because it inclu
 | XGBoost | 3 | 0.03532 | 0.00230 | 0.5879 |
 | Feature-only MLP | 3 | 0.02738 | 0.00386 | 0.5857 |
 
-**Interpretation:** in this particular 50k multi-seed study, GraphSAGE is competitive and has a higher mean AP than XGBoost, but it is not uniformly dominant: Logistic Regression has the highest mean AP among the canonical main-model rows. The GraphSAGE result also has noticeably larger seed-to-seed variability than XGBoost.
+**Interpretation:** GraphSAGE is competitive in the 50k multi-seed study and has a higher mean AP than XGBoost on these canonical rows, but Logistic Regression has the highest mean AP. GraphSAGE also shows noticeably more seed-to-seed variability than XGBoost.
 
-This study should **not** be treated as a direct replacement for the older single-split benchmark: the experimental protocols and model-selection procedures differ.
+This study should **not** be treated as a direct replacement for the temporal walk-forward benchmark: the protocols and selection procedures differ.
 
-### Walk-forward temporal evaluation — 4 folds
+---
 
-The current walk-forward run used 50k chronologically ordered rows, 4 expanding folds, no gap, and 10 GraphSAGE/MLP training epochs.
+## Walk-forward temporal evaluation — 4 folds
+
+The latest walk-forward run uses 50k chronologically ordered rows, 4 expanding folds, no gap, and a maximum neural training budget of **30 epochs**. Early stopping/runner behavior can result in fewer actual epochs on individual folds.
 
 | Model | Mean test AP | Std. dev. | Mean AP lift vs random |
 |---|---:|---:|---:|
 | XGBoost | **0.06427** | 0.02809 | **2.55×** |
-| Feature-only MLP | 0.04733 | 0.01725 | 1.98× |
-| GraphSAGE | 0.04456 | 0.01543 | 1.79× |
+| GraphSAGE | 0.06148 | 0.02444 | 2.44× |
+| Feature-only MLP | 0.06079 | 0.01834 | 2.49× |
 
 The fold-level results are:
 
 | Fold | XGBoost AP | GraphSAGE AP | Feature MLP AP |
 |---:|---:|---:|---:|
-| 1 | **0.07927** | 0.06432 | 0.06791 |
-| 2 | **0.09523** | 0.04584 | 0.03976 |
-| 3 | **0.04934** | 0.04112 | 0.02802 |
-| 4 | **0.03327** | 0.02695 | **0.05363** |
+| 1 | 0.07927 | 0.08426 | **0.08513** |
+| 2 | **0.09523** | 0.06502 | 0.06264 |
+| 3 | 0.04934 | **0.06969** | 0.04177 |
+| 4 | 0.03327 | 0.02695 | **0.05363** |
 
 ![Walk-forward PR-AUC](outputs/walk_forward/walk_forward_pr_auc.png)
 
-**Interpretation:** XGBoost is the strongest model in this temporal robustness run and remains above the random baseline on every fold. GraphSAGE also remains above random on every fold, but it does not beat XGBoost in any of these four test windows.
+**Interpretation:** XGBoost remains the strongest model on mean test AP across the four temporal folds, but the gap is now small: GraphSAGE reaches 0.06148 mean AP versus 0.06427 for XGBoost. GraphSAGE also beats XGBoost on fold 1 and fold 3, while the feature-only MLP wins fold 1 and fold 4. This is substantially more competitive than the earlier 10-epoch walk-forward run.
 
-Importantly, this run used only **10 epochs** for the neural models. It is therefore evidence about the current configuration, not proof that the architecture has reached its maximum attainable performance.
+GraphSAGE remains above the random baseline on every fold. The results therefore do **not** support a universal GraphSAGE advantage, but they also do not justify dismissing the relational model: performance is competitive and varies substantially across time windows.
+
+### Training budget matters
+
+The earlier 10-epoch run produced lower GraphSAGE mean AP (0.04456). The new maximum-30-epoch run reaches 0.06148. This is a large improvement under the same four-fold temporal protocol and is evidence that the earlier result was partly limited by the training budget.
+
+The latest run also shows that GraphSAGE does not necessarily require all 30 epochs on every fold: the recorded training epochs were 30, 25, 30, and 11 respectively.
 
 ---
 
@@ -99,16 +107,16 @@ Importantly, this run used only **10 epochs** for the neural models. It is there
 
 The project also reports precision and recall under fixed alert budgets. This is more meaningful than accuracy for a highly imbalanced fraud problem because a real review system can only investigate a limited fraction of transactions.
 
-For the walk-forward evaluation, the 1% alert-budget results were:
+For the latest walk-forward evaluation, the 1% alert-budget results were:
 
 | Fold | Model | Precision@1% | Recall@1% | AP lift |
 |---:|---|---:|---:|---:|
 | 1 | XGBoost | 22.67% | 8.29% | 2.90× |
-| 1 | GraphSAGE | 12.00% | 4.39% | 2.35× |
+| 1 | GraphSAGE | 22.67% | 8.29% | 3.08× |
 | 2 | XGBoost | 25.33% | 9.31% | 3.50× |
-| 2 | GraphSAGE | 6.67% | 2.45% | 1.69× |
+| 2 | GraphSAGE | 13.33% | 4.90% | 2.39× |
 | 3 | XGBoost | 12.00% | 4.97% | 2.04× |
-| 3 | GraphSAGE | 5.33% | 2.21% | 1.70× |
+| 3 | GraphSAGE | 16.00% | 6.63% | 2.89× |
 | 4 | XGBoost | 9.33% | 4.90% | 1.74× |
 | 4 | GraphSAGE | 1.33% | 0.70% | 1.41× |
 
@@ -126,7 +134,7 @@ The repository also contains the earlier 50k benchmark artifacts:
 
 ![Fraud rate over time](outputs/benchmark_50k/fraud_rate_over_time.png)
 
-These figures are useful for visual interpretation, but the benchmark outputs and the multi-seed study are kept conceptually separate because they were produced under different experimental protocols.
+These figures are useful for visual interpretation, but the historical benchmark, multi-seed study, and walk-forward study are kept conceptually separate because they were produced under different experimental protocols.
 
 ---
 
@@ -141,7 +149,7 @@ The 50k full study also tested the number of historical neighbors retained per r
 | 5 | 0.09309 | 0.04142 |
 | 10 | **0.09806** | **0.04206** |
 
-The result suggests that increasing historical context can improve validation performance, but the test improvement from `k=3` to `k=10` is small. This is exactly why history depth should be evaluated as a controlled ablation rather than selected from the test set.
+The result suggests that increasing historical context can improve validation performance, but the test improvement from `k=3` to `k=10` is small. This is why history depth should be evaluated as a controlled ablation rather than selected from the test set.
 
 ---
 
@@ -167,11 +175,12 @@ The project intentionally does not force a GraphSAGE victory.
 The current evidence is mixed:
 
 - the older single-split 50k benchmark showed GraphSAGE ahead of XGBoost on test AP;
-- the newer 50k multi-seed study still gives GraphSAGE a higher mean AP than XGBoost on the canonical rows, but with higher variability;
-- the 4-fold walk-forward study currently favors XGBoost;
+- the 50k multi-seed study gives GraphSAGE a higher mean AP than XGBoost on its canonical rows, but Logistic Regression is highest and GraphSAGE has greater variability;
+- the latest 4-fold walk-forward study favors XGBoost on mean AP, but only narrowly (0.06427 vs 0.06148);
+- the new 30-epoch-budget walk-forward run substantially improves GraphSAGE over the earlier 10-epoch configuration (0.06148 vs 0.04456 mean AP);
 - GraphSAGE remains above the random AP baseline in every walk-forward fold;
-- the feature-only MLP does not consistently outperform either model, so neural architecture alone does not explain the results;
-- history-depth experiments show that graph context matters, but the optimal value is not yet established across multiple temporal folds.
+- the feature-only MLP is highly competitive in the latest temporal run, which means relational message passing is not the only source of useful signal;
+- history-depth experiments show that graph context matters, but the best setting is not yet established across multiple temporal folds.
 
 This is a more defensible conclusion than claiming that a GNN is automatically superior to a strong tabular baseline.
 
@@ -185,7 +194,7 @@ This is a more defensible conclusion than claiming that a GNN is automatically s
 pytest -q
 ```
 
-The repository's hardened test suite was previously validated with **14 passing tests**.
+The hardened repository's documented test suite was previously validated with **14 passing tests**.
 
 ## Multi-model study
 
@@ -193,15 +202,15 @@ The repository's hardened test suite was previously validated with **14 passing 
 python scripts/run_ml_study.py --data-dir data --max-rows 50000 --epochs 20 --suite full --seeds 42 123 456 --output-dir outputs\ml_study_full
 ```
 
-## Walk-forward temporal evaluation
+## Walk-forward temporal evaluation — latest configuration
 
 ```powershell
-python scripts/run_temporal_cv.py --data-dir data --max-rows 50000 --epochs 10 --output-dir outputs\walk_forward
+python scripts/run_temporal_cv.py --data-dir data --max-rows 50000 --epochs 30 --output-dir outputs\walk_forward
 ```
 
 ## 100k benchmark
 
-A 100k benchmark is supported but **has not been numerically reported in this repository**. Do not treat a smoke test as a final 100k result.
+A 100k benchmark is supported but **has not been numerically reported as final evidence in this repository**. Do not treat a smoke test as a final 100k result.
 
 ```powershell
 New-Item -ItemType Directory -Force outputs\benchmark_100k
@@ -244,4 +253,4 @@ For large graphs, `graph-mode=auto` can use PyTorch Geometric neighbor sampling 
 
 This is a research/portfolio implementation, not a production fraud service. The reported numbers depend on the IEEE-CIS data subset, temporal windows, feature construction, graph relations, hyperparameters, seeds, and compute environment.
 
-The most important remaining empirical questions are whether GraphSAGE improves with a longer training budget under the same walk-forward protocol, which graph relations and history depths are genuinely useful, and whether any advantage survives additional temporal folds and seeds.
+The strongest remaining empirical questions are whether the improved GraphSAGE performance remains stable with additional seeds and temporal folds, which graph relations and history depths are genuinely useful, and whether graph message passing provides a statistically robust advantage over the strongest tabular and feature-only neural baselines.
