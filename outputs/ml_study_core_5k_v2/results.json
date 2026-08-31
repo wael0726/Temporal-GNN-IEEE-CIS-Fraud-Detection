@@ -1,0 +1,147 @@
+[
+  {
+    "model": "xgboost",
+    "seed": 42,
+    "validation_pr_auc": 0.05722740921855494,
+    "test": {
+      "pr_auc": 0.058434699074677285,
+      "roc_auc": 0.613972602739726,
+      "prevalence": 0.02666666666666667,
+      "random_baseline_pr_auc": 0.02666666666666667,
+      "ap_lift_vs_random": 2.191301215300398,
+      "precision_at_0.1pct": 0.0,
+      "recall_at_0.1pct": 0.0,
+      "alerts_at_0.1pct": 1,
+      "precision_at_0.5pct": 0.0,
+      "recall_at_0.5pct": 0.0,
+      "alerts_at_0.5pct": 4,
+      "precision_at_1pct": 0.25,
+      "recall_at_1pct": 0.1,
+      "alerts_at_1pct": 8,
+      "precision_at_2pct": 0.13333333333333333,
+      "recall_at_2pct": 0.1,
+      "alerts_at_2pct": 15,
+      "precision_at_5pct": 0.05263157894736842,
+      "recall_at_5pct": 0.1,
+      "alerts_at_5pct": 38,
+      "brier": 0.02633165861833289,
+      "ece_10": 0.022867226136765874,
+      "calibration_bins": 10,
+      "precision": 0.03409090909090909,
+      "recall": 0.45,
+      "f1": 0.06338028169014084,
+      "threshold": 0.0012068116338923573
+    },
+    "ci": {
+      "estimate": 0.058434699074677285,
+      "low": 0.021877830207607103,
+      "high": 0.1724103123079781,
+      "n_boot": 300
+    }
+  },
+  {
+    "model": "feature_mlp",
+    "seed": 42,
+    "validation_pr_auc": 0.14767643683559287,
+    "test": {
+      "pr_auc": 0.037054617907292184,
+      "roc_auc": 0.5343835616438356,
+      "prevalence": 0.02666666666666667,
+      "random_baseline_pr_auc": 0.02666666666666667,
+      "ap_lift_vs_random": 1.3895481715234568,
+      "precision_at_0.1pct": 0.0,
+      "recall_at_0.1pct": 0.0,
+      "alerts_at_0.1pct": 1,
+      "precision_at_0.5pct": 0.0,
+      "recall_at_0.5pct": 0.0,
+      "alerts_at_0.5pct": 4,
+      "precision_at_1pct": 0.0,
+      "recall_at_1pct": 0.0,
+      "alerts_at_1pct": 8,
+      "precision_at_2pct": 0.0,
+      "recall_at_2pct": 0.0,
+      "alerts_at_2pct": 15,
+      "precision_at_5pct": 0.0,
+      "recall_at_5pct": 0.0,
+      "alerts_at_5pct": 38,
+      "brier": 0.24497439536983207,
+      "ece_10": 0.46776468940575927,
+      "calibration_bins": 10,
+      "precision": 0.025,
+      "recall": 0.05,
+      "f1": 0.03333333333333333,
+      "threshold": 0.5279377102851868
+    },
+    "ci": {
+      "estimate": 0.037054617907292184,
+      "low": 0.019932756702690544,
+      "high": 0.07383009934445768,
+      "n_boot": 300
+    },
+    "training_epochs": 2
+  },
+  {
+    "model": "graphsage",
+    "relations": [
+      "card1",
+      "addr1",
+      "DeviceInfo",
+      "P_emaildomain",
+      "ProductCD"
+    ],
+    "history_k": 3,
+    "seed": 42,
+    "validation_pr_auc": 0.08284956964963243,
+    "test": {
+      "pr_auc": 0.031267884900416966,
+      "roc_auc": 0.5282191780821918,
+      "prevalence": 0.02666666666666667,
+      "random_baseline_pr_auc": 0.02666666666666667,
+      "ap_lift_vs_random": 1.172545683765636,
+      "precision_at_0.1pct": 0.0,
+      "recall_at_0.1pct": 0.0,
+      "alerts_at_0.1pct": 1,
+      "precision_at_0.5pct": 0.0,
+      "recall_at_0.5pct": 0.0,
+      "alerts_at_0.5pct": 4,
+      "precision_at_1pct": 0.0,
+      "recall_at_1pct": 0.0,
+      "alerts_at_1pct": 8,
+      "precision_at_2pct": 0.0,
+      "recall_at_2pct": 0.0,
+      "alerts_at_2pct": 15,
+      "precision_at_5pct": 0.0,
+      "recall_at_5pct": 0.0,
+      "alerts_at_5pct": 38,
+      "brier": 0.24575194654966973,
+      "ece_10": 0.4686259353955587,
+      "calibration_bins": 10,
+      "precision": 0.030303030303030304,
+      "recall": 0.15,
+      "f1": 0.05042016806722689,
+      "threshold": 0.5119408965110779
+    },
+    "ci": {
+      "estimate": 0.031267884900416966,
+      "low": 0.017131153187076194,
+      "high": 0.05569818518071366,
+      "n_boot": 300
+    },
+    "edges": 45978,
+    "training_epochs": 2
+  },
+  {
+    "model": "paired_delta_graphsage_minus_xgboost",
+    "seed": 42,
+    "validation_pr_auc": null,
+    "test": {
+      "pr_auc": -0.02716681417426032
+    },
+    "ci": {
+      "delta_ap": -0.02716681417426032,
+      "low": -0.13637492677107993,
+      "high": 0.00878374711952459,
+      "n_boot": 500
+    }
+  }
+]

@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+*.pyc
+# Raw datasets are not committed.
+data/*.csv
+data/*.zip
+artifacts/*.pt
+artifacts/*.csv
+artifacts/*.json
+artifacts/*.png
