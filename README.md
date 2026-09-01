@@ -89,7 +89,7 @@ The fold-level results are:
 | 3 | 0.04934 | 0.06969 | 0.04177 |
 | 4 | 0.03327 | 0.02695 | 0.05363 |
 
-![Walk-forward PR-AUC](outputs/walk_forward/walk_forward_pr_auc.png)
+![Walk-forward PR-AUC](outputs/walk_forward/walk_forward_prauc.png)
 
 **Interpretation:** XGBoost remains the strongest model on mean test AP across the four temporal folds, but the gap is now small: GraphSAGE reaches 0.06148 mean AP versus 0.06427 for XGBoost. GraphSAGE also beats XGBoost on fold 1 and fold 3, while the feature-only MLP wins fold 1 and fold 4. This is substantially more competitive than the earlier 10-epoch walk-forward run.
 
