@@ -24,7 +24,7 @@ The experimental ladder contains:
 
 This separation is important: if GraphSAGE improves over the feature-only MLP, the gain is more plausibly attributable to relational message passing rather than simply using a neural network.
 
-![Temporal graph concept](artifacts/static/temporal_graph_concept.png)
+![Temporal graph concept](artifacts/static/temporal_graph.png)
 
 ---
 
