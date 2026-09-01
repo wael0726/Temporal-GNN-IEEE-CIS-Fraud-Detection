@@ -44,7 +44,7 @@ The implementation is designed around temporal leakage prevention:
 
 The temporal aspect is therefore **causal historical feature engineering + a directed temporal graph**. This is not presented as a full Temporal Graph Network (TGN) with persistent event memory.
 
-![Pipeline overview](artifacts/static/pipeline_overview.png)
+![Pipeline overview](artifacts/static/pipelineoverview.png)
 
 ---
 
