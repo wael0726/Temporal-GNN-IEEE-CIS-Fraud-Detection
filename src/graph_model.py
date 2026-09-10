@@ -146,12 +146,7 @@ def train_graphsage(
     patience=7,
     gradient_clip=5.0,
 ):
-    """Full-batch GraphSAGE with validation-AP early stopping.
-
-    This is the reference implementation: deterministic in structure, simple
-    enough for ablations, and appropriate for graphs that fit comfortably in
-    memory.
-    """
+    """Full-batch GraphSAGE with validation-AP early stopping."""
     set_seed(seed)
     model = GraphSAGE(graph.x.size(1), hidden=hidden, dropout=dropout)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
@@ -241,11 +236,7 @@ def train_graphsage_sampled(
     num_neighbors=(20, 10),
     gradient_clip=5.0,
 ):
-    """Mini-batch GraphSAGE for larger graphs using PyG NeighborLoader.
-
-    Only seed nodes contribute to the loss. The sampled subgraph still contains
-    historical context, while memory use is bounded by the neighborhood budget.
-    """
+    """Mini-batch GraphSAGE for larger graphs using PyG NeighborLoader."""
     if not HAS_PYG:
         raise RuntimeError("Sampled GraphSAGE requires torch-geometric.")
     set_seed(seed)
