@@ -95,11 +95,7 @@ def apply_platt_scaler(calibrator, proba):
 
 
 def fit_isotonic_scaler(y_val, val_proba):
-    """Fit non-parametric monotonic calibration.
-
-    Isotonic calibration can overfit small calibration sets; use it only when
-    the calibration window contains enough positive and negative examples.
-    """
+    """Fit non-parametric monotonic calibration."""
     y_val = np.asarray(y_val, dtype=int)
     val_proba = np.asarray(val_proba, dtype=float)
     if len(y_val) < 1000 or len(np.unique(y_val)) < 2:
@@ -139,12 +135,6 @@ def calibration_metrics(y_true, proba) -> dict:
 
 
 def metrics(y_true, proba, threshold: float | None = None) -> dict:
-    """Complete evaluation report.
-
-    Thresholds must be selected on validation/calibration data before final
-    test reporting. Passing an explicit threshold is therefore the safe default
-    for held-out test sets.
-    """
     y_true = np.asarray(y_true)
     proba = np.asarray(proba, dtype=float)
     if len(y_true) != len(proba):
@@ -200,11 +190,7 @@ def bootstrap_ci(y_true, proba, metric="pr_auc", n_boot=1000, seed=42) -> dict:
 
 
 def paired_bootstrap_delta(y_true, proba_a, proba_b, n_boot=1000, seed=42) -> dict:
-    """Paired bootstrap CI and one-sided probability that AP(B) > AP(A).
-
-    The same resampled transactions are used for both models, which is more
-    informative than comparing two independent confidence intervals.
-    """
+    """Paired bootstrap CI and one-sided probability that AP(B) > AP(A)."""
     y_true = np.asarray(y_true)
     a = np.asarray(proba_a, dtype=float)
     b = np.asarray(proba_b, dtype=float)
