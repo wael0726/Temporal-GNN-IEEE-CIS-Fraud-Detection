@@ -59,12 +59,7 @@ def build_temporal_graph(
     history_k: int = 3,
     add_global_temporal_edges: bool = False,
 ) -> GraphBundle:
-    """Build a deduplicated directed graph where every edge is past -> current.
-
-    Missing categorical values are skipped and therefore never create a shared
-    synthetic entity. Edge time deltas are retained for auditing and future
-    time-aware message-passing variants.
-    """
+    """Build a deduplicated directed graph where every edge is past -> current to avoid data leakage"""
     if not pd.to_datetime(df["timestamp"]).is_monotonic_increasing:
         raise ValueError("Graph construction requires chronologically sorted input.")
 
